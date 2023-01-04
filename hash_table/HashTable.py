@@ -1,7 +1,7 @@
 from typing import Optional
 
 
-# HashTable class using chaining.
+# hash_table class using chaining.
 class HashTable:
     def __init__(self, size=16):
         self.buckets = []
@@ -62,3 +62,33 @@ class HashTable:
         # remove the item from the bucket list if it is present.
         if key in bucket_list:
             bucket_list.remove(key)
+
+    #Displays a list of keys in the Hash Table.
+    def keys(self):
+        key_list = []
+        for i in range(len(self.buckets)):
+            if self.buckets[i]:
+                for j in range(len(self.buckets[i])):
+                    key_list.append(self.buckets[i][j][0])
+        return key_list
+
+    #Displays a list of values in the Hash Table.
+    def values(self):
+        values_list = []
+        for i in range(len(self.buckets)):
+            if self.buckets[i]:
+                for j in range(len(self.buckets[i])):
+                    values_list.append(self.buckets[i][j][1])
+        return values_list
+
+    #Returns the Hash Table as a string in the format {key, value}.
+    def __repr__(self):
+        return_val = "{"
+        key_value_zip = list(zip(self.keys(), self.values()))
+        add_comma = True
+        for key, value in key_value_zip:
+            add_comma = not add_comma
+            if add_comma:
+                return_val += ', '
+            return_val += "%s:%s" % (key, value)
+        return return_val + '}'
