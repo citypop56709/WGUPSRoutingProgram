@@ -1,9 +1,11 @@
 import datetime
 from typing import Optional
+import time
 
 
 class Package:
-    def __init__(self, id:int, address:str, city:str, state:str, zip:str, deadline:object, mass:int, note:Optional[str]):
+    def __init__(self, id: int, address: str, city: str, state: str, zip: str, deadline: object, mass: int,
+                 note: Optional[str]):
         self.id = id
         self.address = address
         self.city = city
@@ -11,35 +13,59 @@ class Package:
         self.zip = zip
         self.deadline = deadline
         self.mass = mass
-        self.arrival = None
         self.note = note
-        self.truck2 = False
+        self.truck2 = self.set_truck2(note)
+        self.arrival = self.set_arrival(note)
+        self.co_package = self.set_co_package(note)
 
-    """    
-    Reads the memo and set's the truck2 flag to True if it requires Truck 2 for deliveries.
-    """
-    def is_truck2(self, note:str):
-        if "can only be on truck 2" in note.lower(): self.truck2 = True
+    def set_truck2(self, s: str):
+        if s and type(s) != float:
+            if "can only be on truck 2" in s.lower():
+                return True
+        else:
+            return False
+
+    def set_arrival(self, s: str):
+        if s and type(s) != float:
+            return self.get_arrival_from_string(s)
+        else:
+            return None
 
     """
-    Reads the memo and set's the arrival time from none to a special arrival time frame.
+    Setter function for the co_package attribute. The if statement checks if a package has to be delivered with another one and
+    then performs a for loop to remove all the extra characters in the string and only return a list of which packages need to be delivered with it.
     """
-    def find_arrival(self, note:str):
-        time = ''
-        new_string = ''.join([i for i in note.lower() if i.isalnum()])
+
+    def set_co_package(self, s: str):
+        if s and type(s) != float:
+            if "must be delivered with" in s.lower():
+                res = ''
+                for i in range(len(s)):
+                    if not s[i].isalpha():
+                        res += s[i]
+                return res.split()
+            else:
+                return None
+        else:
+            return None
+
+    def get_arrival_from_string(self, s: str):
+        arrival_time = ""
+        new_string = "".join([i for i in s.lower() if i.isalnum()])
         for i in range(len(new_string)):
             if new_string[i].isdigit():
-                time += new_string[i]
-            elif new_string[i] == ':':
-                time += new_string[i]
-            elif time and new_string[i:i+2] == 'am' or new_string[i:i+2] == 'pm':
-                time += new_string[i:i+2]
+                arrival_time += new_string[i]
+            elif new_string[i] == ":":
+                arrival_time += new_string[i]
+            elif (
+                    arrival_time
+                    and new_string[i: i + 2] == "am"
+                    or new_string[i: i + 2] == "pm"
+            ):
+                arrival_time += new_string[i: i + 2]
             else:
                 pass
-        return time
-
-
-
-
-
-
+        try:
+            return time.strptime(arrival_time, "%I%M%p") if arrival_time else None
+        except ValueError:
+            return None
