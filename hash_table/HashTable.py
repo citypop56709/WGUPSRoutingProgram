@@ -3,6 +3,13 @@ from typing import Optional
 
 # hash_table class using chaining.
 class HashTable:
+
+    """
+    A constructor for the hash table. The hash table stores key value pairs using buckets.
+    The hash table is initialized to a size of 16 and has a size attribute to easily keep track
+    of how many buckets are in the hash table. The bucket count attribute tracks how many buckets
+    are actively used.
+    """
     def __init__(self, size=16):
         self.buckets = []
         self.size = 16
@@ -10,7 +17,11 @@ class HashTable:
         self.__expand_buckets(self.size)
 
     """
-    How this works: This function expands the size of the hash table in a logical manner. 
+    A function that expands the hash table and updates the size if the buckets reach a certain capacity.
+    How this works: 
+    1. The size that's passed in is based on the put function. It's always twice the size of the original hash table.
+    2. The function appends empty buckets in the range of the new size.
+    3. If this is called at the start then the size value stays at 16. Otherwise we update it.
     """
 
     def __expand_buckets(self, new_size, start=0) -> None:
@@ -20,50 +31,66 @@ class HashTable:
             self.size = new_size
 
     """
-    How this works: This function first checks the size of the buckets to see if we need to expand the hash table or not.
+    A function to put a key and value into the hash table.
+    How this works: 
+    1. This function first checks the size of the buckets to see if we need to expand
+    the hash table or not. If we do it expands it according to the __expand_buckets method.
+    2. The index is based on hash of the key constrained withe size of the hash table.
+    3. We check if the key exists in the hash table using the get function. If it does then we update the value.
+    If there is a collision because the hash is the same as another key then we perform chaining by appending
+    the tuple to the same bucket.
+    4. If the key is not in the hash table then we append the tuple to the appropriate bucket.
     """
-
     def put(self, key, value):
-        # Checks if the hash table needs to be expanded or not.
         if self.bucket_count >= (self.size // 2):
             self.__expand_buckets(self.size, (self.size * 2))
 
         index = hash(key) % self.size
         if self.get(key):
-            # update the bucket if it exists already
-            # stops at the first match and returns
             for i in range(len(self.buckets[index])):
                 if self.buckets[index][i][0] == key:
                     self.buckets[index][i][1] = value
                     return
+            else:
+                self.buckets[index].append((key, value))
         else:
             self.buckets[index].append((key, value))
+        self.bucket_count += 1
 
-    # Method to retrieve the values from the hash table
-    def get(self, key) -> Optional["object"]:
+    """
+    A function that gets the key from the hash table and returns the value the key is associated with.
+    How it works:
+    1. The index is based on hash of the key constrained by the size of the hash table.
+    2. If there is a bucket occupied by that index then the function uses linear probing to find
+    which value in the bucket matches the key.
+    3. If the value is found then return it.
+    4. If the key is not in the bucket array then we return None
+    """
+    def get(self, key):
         index = hash(key) % self.size
         if self.buckets[index]:
-            # find the item's index and return the item that is in the bucket list.
-            # this process uses linear probing to find the key
             values = self.buckets[index]
             for i in range(len(values)):
                 if self.buckets[index][i][0] == key:
                     return self.buckets[index][i][1]
         else:
-            # the key is not found.
             return None
 
-    # Removes an item with matching key from the hash table.
+    """
+    A function to remove a key from the hash table. This is done in two ways:
+    1. Get the bucket that the value should be located in based on the key's hash.
+    2. If the key is in the bucket that it should be in then remove it.
+    """
     def remove(self, key):
-        # get the bucket list where this item will be removed from.
         bucket = hash(key) % self.size
         bucket_list = self.buckets[bucket]
 
-        # remove the item from the bucket list if it is present.
         if key in bucket_list:
             bucket_list.remove(key)
 
-    #Displays a list of keys in the Hash Table.
+    """
+    A function return the values in the keys of the hash table as a list. Useful for iterating over all the keys at once.
+    """
     def keys(self):
         key_list = []
         for i in range(len(self.buckets)):
@@ -72,7 +99,10 @@ class HashTable:
                     key_list.append(self.buckets[i][j][0])
         return key_list
 
-    #Displays a list of values in the Hash Table.
+    """
+    A function to return the values in the hash table as a list. This is useful when you're trying to iterate
+    through all the values at once.
+    """
     def values(self):
         values_list = []
         for i in range(len(self.buckets)):
@@ -80,15 +110,3 @@ class HashTable:
                 for j in range(len(self.buckets[i])):
                     values_list.append(self.buckets[i][j][1])
         return values_list
-
-    #Returns the Hash Table as a string in the format {key, value}.
-    def __repr__(self):
-        return_val = "{"
-        key_value_zip = list(zip(self.keys(), self.values()))
-        add_comma = True
-        for key, value in key_value_zip:
-            add_comma = not add_comma
-            if add_comma:
-                return_val += ', '
-            return_val += "%s:%s" % (key, value)
-        return return_val + '}'

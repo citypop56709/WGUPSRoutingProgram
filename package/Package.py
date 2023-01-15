@@ -69,3 +69,5 @@ class Package:
             return time.strptime(arrival_time, "%I%M%p") if arrival_time else None
         except ValueError:
             return None
+
+
