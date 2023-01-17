@@ -16,7 +16,7 @@ class AddressTable:
     def get_addresses(file_path: str, address_index: int):
         addresses = HashTable()
         address_data = pd.read_excel(rf"{file_path}", skiprows=7)
-        address_list = address_data[address_data.columns[0]]
+        address_list = address_data[address_data.columns[1]]
         for i in range(address_index):
-            addresses.put(i, address_list[i])
+            addresses.put(address_list[i].split('(')[0].strip(), i)
         return addresses
