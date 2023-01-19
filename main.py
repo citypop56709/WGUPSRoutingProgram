@@ -1,14 +1,15 @@
-from utils import AddressTable, Distances, PackageList
+from truck.Truck import Truck
+from utils import Distances, PackageTable
 
 
 def main():
-    distance_file_path = r"Documentation/WGUPS Distance Table.xlsx"
-    address_file_path = r"Documentation/WGUPS Distance Table.xlsx"
-    package_file_path = r"Documentation/WGUPS Package File.xlsx"
-    distances = Distances(distance_file_path)
-    address_table = AddressTable.get_addresses(address_file_path, len(distances.graph))
-    packages = PackageList.get_packages(package_file_path, address_table)
-    print(distances.get_min_distance(packages[:3], address_table))
+    address_list = Distances.get_addresses_from_file(r"Documentation/WGUPS Distance Table.xlsx")
+    for address in address_list:
+        print(address.distances)
+    packages = PackageTable.get_packages(r"Documentation/WGUPS Package File.xlsx")
+    truck1 = Truck(address_list, packages)
+
+
 
 
 if __name__ == '__main__':

@@ -1,10 +1,11 @@
 import datetime
 from typing import Optional
 import time
+from address import Address
 
 
 class Package:
-    def __init__(self, id: int, address: str, city: str, state: str, zip: str, deadline: object, mass: int,
+    def __init__(self, id: int, address: Address, city: str, state: str, zip: str, deadline: object, mass: int,
                  note: Optional[str]):
         self.id = id
         self.address = address
