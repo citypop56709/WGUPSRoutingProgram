@@ -1,13 +1,23 @@
-from truck.Truck import Truck
+from package import Package
+from truck import Truck
+from truck import Depot
 from utils import Distances, PackageTable
 
 
 def main():
-    address_list = Distances.get_addresses_from_file(r"Documentation/WGUPS Distance Table.xlsx")
-    for address in address_list:
-        print(address.distances)
-    packages = PackageTable.get_packages(r"Documentation/WGUPS Package File.xlsx")
-    truck1 = Truck(address_list, packages)
+    distance_file_path = r"Documentation/WGUPS Distance Table.csv"
+    package_file_path = r"Documentation/WGUPS Package File.csv"
+    address_list = Distances.get_addresses_from_file(distance_file_path)
+    packages = PackageTable.get_packages(package_file_path)
+    print(packages.values())
+    #hub_depot = Depot(address_list, packages)
+
+
+
+
+
+
+
 
 
 

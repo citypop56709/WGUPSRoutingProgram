@@ -1,13 +1,10 @@
 from typing import Optional
-
-from hash_table import HashTable
 from package import Package
-from utils import Distances
-from hash_table import HashTable
+
 
 
 class Truck:
-    def __init__(self, id, current_packages: list[Package], address_list: list[list[int]]):
+    def __init__(self, id, current_packages: Optional[list[Package]], address_list: list[list[int]]):
         self.id = id
         self.current_package = None  # Current address
         self.speed = float(18)

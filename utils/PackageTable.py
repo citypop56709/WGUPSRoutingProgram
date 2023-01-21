@@ -1,7 +1,6 @@
 from hash_table import HashTable
-import pandas as pd
-from hash_table import HashTable
 from package import Package
+import csv
 
 """
 This class has only one method, get_packages that retreives all the packages from the excel spreadsheet using Pandas
@@ -15,10 +14,12 @@ class PackageTable:
     @classmethod
     def get_packages(cls, file_path: str):
         packages_table = HashTable()
-        package_data = pd.read_excel(rf"{file_path}", skiprows=7)
-        for i in range(package_data.shape[0]):
-            values = package_data.iloc[i]
-            new_package = Package(values[0], values[1], values[2], values[3], values[4], values[5], values[6],
-                                  values[7])
-            packages_table.put(new_package.id, new_package)
+        file = open(file_path)
+        package_data = csv.reader(file)
+        for i, row in enumerate(package_data):
+            if i > 7:
+                values = row
+                new_package = Package(values[0], values[1], values[2], values[3], values[4], values[5], values[6],
+                                      values[7])
+                packages_table.put(new_package.id, new_package)
         return packages_table

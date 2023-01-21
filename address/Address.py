@@ -9,3 +9,6 @@ class Address:
         self.id = address_id
         self.address = address
         self.distances = distances
+
+    def __repr__(self):
+        return f'[{self.id}:{self.address}:{self.distances}]'

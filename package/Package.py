@@ -15,10 +15,13 @@ class Package:
         self.deadline = deadline
         self.mass = mass
         self.note = note
+        self.status = None
         self.truck2 = self.set_truck2(note)
         self.arrival = self.set_arrival(note)
         self.co_package = self.set_co_package(note)
 
+    def __repr__(self):
+        return f'Package ID: {self.id}, Address: {self.address}, City:{self.city}, Zip:{self.zip}\n'
     def set_truck2(self, s: str):
         if s and type(s) != float:
             if "can only be on truck 2" in s.lower():
