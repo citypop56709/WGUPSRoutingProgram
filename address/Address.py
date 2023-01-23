@@ -5,10 +5,10 @@ distances and an ID.
 
 
 class Address:
-    def __init__(self, address_id: int, address:str, distances: list[int]):
+    """
+    When I made this class I had to separate address from street address to improve readability.
+    """
+    def __init__(self, address_id: int, street_address:str, distances: list[float]):
         self.id = address_id
-        self.address = address
+        self.street_address = street_address
         self.distances = distances
-
-    def __repr__(self):
-        return f'[{self.id}:{self.address}:{self.distances}]'

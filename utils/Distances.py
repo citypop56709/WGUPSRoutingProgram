@@ -1,5 +1,6 @@
 import csv
 from address import Address
+from hash_table import HashTable
 
 
 class Distances:
@@ -19,10 +20,12 @@ class Distances:
                 if i > 7:
                     raw_address = row[1]
                     formatted_address = raw_address.split("(")[0].strip()
-                    distances = row[2:]
+                    #The distances come as strings so we have to convert them.
+                    distances = [float(x) for x in row[2:] if x]
                     address_list.append(Address(id, formatted_address, distances))
                     id += 1
-            Distances.__set_null_distances(address_list)
+            #After the distances are created we then replace the missing values with the correct ones.
+            Distances.set_null_distances(address_list)
             return address_list
         except FileNotFoundError:
             raise FileNotFoundError("There is no CSV file for the distances.") from None
@@ -30,18 +33,17 @@ class Distances:
             raise ValueError("The distances are not in a valid format.") from None
 
     @classmethod
-    def __set_null_distances(cls, address_list:list[Address]):
-        for i in range(len(address_list)):
-                for j in range(len(address_list[i].distances)):
-                    if not address_list[i].distances[j]:
-                        address_list[i].distances[j] = Distances.__set_null_distance(address_list, i, j)
+    def get_address_table(cls, address_list: list[Address]) -> HashTable:
+        address_table = HashTable()
+        for address in address_list:
+            address_table.put(address.street_address, address)
+        return address_table
 
     @classmethod
-    def __set_null_distance(cls, address_list: list[Address],start_id: int, destination_id: id):
-        try:
-            if destination_id > start_id:
-                return address_list[destination_id].distances[start_id]
-            else:
-                return address_list[start_id].distances[destination_id]
-        except IndexError:
-            raise IndexError("Out of range start or destination.") from None
+    def set_null_distances(cls, address_list:list[Address]) -> None:
+        for i in range(len(address_list)):
+            for j in range(len(address_list)):
+                try:
+                    address_list[i].distances[j]
+                except IndexError:
+                    address_list[i].distances.append(address_list[j].distances[i])
