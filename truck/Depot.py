@@ -1,6 +1,8 @@
 """
 Class to help manage multiple trucks. This class has methods and attributes specifically for seeing where all the packages are.
 """
+import datetime
+
 from address import Address
 from hash_table import HashTable
 from package import Package
@@ -14,6 +16,7 @@ class Depot:
         self.address_list = address_list
         self.delayed_packages = []
         self.deliverable_packages = self.process_packages()
+        self.work_start_time = self.get_work_start_time()
 
     def process_packages(self) -> list[Package]:
         deliverable_packages = []
@@ -50,3 +53,7 @@ class Depot:
                 truck2_list.append(package)
         self.trucks.append(Truck(1, truck1_list, self.address_list))
         self.trucks.append(Truck(2, truck2_list, self.address_list))
+
+    def get_work_start_time(self):
+        current_date = datetime.datetime.today()
+        return current_date.replace(hour=8, minute=30, second=0)

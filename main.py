@@ -13,6 +13,7 @@ def main():
     depot = Depot(address_list, packages)
     depot.load_trucks()
     depot.trucks[0].deliver_packages()
+    depot.trucks[1].deliver_packages()
     #hub_depot = Depot(address_list, packages)
 
 
