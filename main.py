@@ -1,5 +1,3 @@
-from package import Package
-from truck import Truck
 from truck import Depot
 from utils import Distances, PackageTable
 
@@ -12,19 +10,9 @@ def main():
     packages = PackageTable.get_packages(package_file_path, address_table)
     depot = Depot(address_list, packages)
     depot.load_trucks()
-    depot.trucks[0].deliver_packages()
-    depot.trucks[1].deliver_packages()
+    #depot.trucks[0].deliver_packages()
+    depot.trucks[1].deliver_package()
     #hub_depot = Depot(address_list, packages)
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     main()

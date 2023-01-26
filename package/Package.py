@@ -15,10 +15,12 @@ class Package:
         self.deadline = deadline
         self.mass = mass
         self.note = note
-        self.status = None
+        self.status = 'At hub'
         self.truck2 = self.set_truck2(note)
         self.arrival = self.set_arrival(note)
         self.co_package = self.set_co_package(note)
+        self.delivery_info = (f'Package ID: {id}, Address: {address.street_address}',
+                                f'At Hub')
 
     def set_truck2(self, s: str):
         if s and type(s) != float:
@@ -39,13 +41,19 @@ class Package:
     """
 
     def set_co_package(self, s: str):
+        #Extract the package id's from the string
         if s and type(s) != float:
             if "must be delivered with" in s.lower():
                 res = ''
                 for i in range(len(s)):
                     if not s[i].isalpha():
                         res += s[i]
-                return res.split()
+                #Split the string making the string into a list of all the values.
+                split_list = res.split(',')
+                #Turn all these strings into integers
+                for i in range(len(split_list)):
+                    split_list[i] = int(split_list[i])
+                return split_list
             else:
                 return None
         else:

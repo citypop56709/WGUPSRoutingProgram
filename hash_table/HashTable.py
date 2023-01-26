@@ -1,96 +1,79 @@
 from typing import Optional
 
 
-# hash_table class using chaining.
+"""
+A Hash Table class that implements a hash table using chaining and linear probing.
+Differs slightly from the implementation in 7.8 in that you insert keys and values at the same time.
+This makes it easier to pull a value from the given key. If they key is already in the hash table when a value is added the key gets deleted.
+This also helps because if a key has the same hash as another key, it will check to see if the keys are actually the same before returning a value.
+"""
 class HashTable:
+    # HashTable constructor. Initial capacity is optional.
+    def __init__(self, initial_capacity=16):
+        self.table = []
+        # The capacity is implemented by adding empty array buckets to the table.
+        for i in range(initial_capacity):
+            self.table.append([])
 
-    """
-    A constructor for the hash table. The hash table stores key value pairs using buckets.
-    The hash table is initialized to a size of 16 and has a size attribute to easily keep track
-    of how many buckets are in the hash table. The bucket count attribute tracks how many buckets
-    are actively used.
-    """
-    def __init__(self, size=16):
-        self.buckets = []
-        self.size = 16
-        for i in range(size):
-            self.buckets.append([])
-
-    """
-    A function to put a key and value into the hash table.
-    How this works: 
-    1. This function first checks the size of the buckets to see if we need to expand
-    the hash table or not. If we do it expands it according to the __expand_buckets method.
-    2. The index is based on hash of the key constrained withe size of the hash table.
-    3. We check if the key exists in the hash table using the get function. If it does then we update the value.
-    If there is a collision because the hash is the same as another key then we perform chaining by appending
-    the tuple to the same bucket.
-    4. If the key is not in the hash table then we append the tuple to the appropriate bucket.
-    """
+    # Inserts a new key, value pair into the hash table.
     def put(self, key, value):
-        bucket = hash(key) % self.size
+        # If the key is already in the hash table then we want to remove it, and replace its value.
         if self.get(key):
-            for i in range(len(self.buckets[bucket])):
-                if self.buckets[bucket][i][0] == key:
-                    self.buckets[bucket][i][1] = value
-                    return
-            else:
-                self.buckets[bucket].append((key, value))
-        else:
-            self.buckets[bucket].append((key, value))
+            self.remove(key)
+        # get the bucket list where this item will go.
+        bucket = hash(key) % len(self.table)
+        bucket_list = self.table[bucket]
+        # insert the key, value pair into the bucket list.
+        bucket_list.append((key, value))
 
-    """
-    A function that gets the key from the hash table and returns the value the key is associated with.
-    How it works:
-    1. The index is based on hash of the key constrained by the size of the hash table.
-    2. If there is a bucket occupied by that index then the function uses linear probing to find
-    which value in the bucket matches the key.
-    3. If the value is found then return it.
-    4. If the key is not in the bucket array then we return None
-    """
-    def get(self, input_key):
-        bucket = hash(input_key) % self.size
-        if self.buckets[bucket]:
-            values = self.buckets[bucket]
-            for key, value in values:
-                if input_key == key:
-                    return value
+    # Searches for an value in the hash table using a given key.
+    # Overall time complexity is O(n) the reason why is that it has
+    # to perform at least one loop to find all the key, value pairs in the given bucket.
+    def get(self, key):
+        # get the bucket list where this key would be.
+        bucket = hash(key) % len(self.table)
+        bucket_list = self.table[bucket]
+        # Search through all the key value pairs and see if the key matches a key in the bucket's pairs.
+        for (_key, value) in bucket_list:
+            if key == _key:
+                return value
         else:
+            # the key is not found.
             return None
 
-    """
-    A function to remove a key from the hash table. This is done in two ways:
-    1. Get the bucket that the value should be located in based on the key's hash.
-    2. If the key is in the bucket that it should be in then remove it.
-    """
+    # Removes a key, value pair from the hash table given a specific key.
     def remove(self, key):
-        bucket = hash(key) % self.size
-        bucket_list = self.buckets[bucket]
+        # get the bucket list where this key, value pair will be removed from.
+        bucket = hash(key) % len(self.table)
+        bucket_list = self.table[bucket]
 
-        if key in bucket_list:
-            bucket_list.remove(key)
+        # remove the the key, value pair from the bucket if it's present in that bucket
+        for (_key, value) in bucket_list:
+            if key == _key:
+                bucket_list.remove((key, value))
 
-    """
-    A function to return the keys in the hash table as a list. This is useful when you're trying to iterate
-    through all the keys at once.
-    """
+    # A function that returns a list of every key in the hash table.
+    # Time Complexity is O(n*m) where n is the number of buckets in the hash table, and m is the number of key, value pairs in the bucket.
+    # This is because it has to perfrom two for loops to retrieve all the data.
     def keys(self):
-        keys_list = []
-        for i in range(len(self.buckets)):
-            if self.buckets[i]:
-                for j in range(len(self.buckets[i])):
-                    keys_list.append(self.buckets[i][j][0])
-        return keys_list
+        res = []
+        # Check every bucket in hash table
+        for bucket_list in self.table:
+            # Adds all the keys to results.
+            for key, value in bucket_list:
+                res.append(key)
+        #Return all the keys as a list.
+        return res
 
-
-    """
-    A function to return the values in the hash table as a list. This is useful when you're trying to iterate
-    through all the values at once.
-    """
+    #A function that returns a list of every value in the hash table.
+    #Time Complexity is O(n*m) where n is the number of buckets in the hash table, and m is the number of key, value pairs in the bucket.
+    #This is because it has to perform two loops to retrieve all the data.
     def values(self):
-        values_list = []
-        for i in range(len(self.buckets)):
-            if self.buckets[i]:
-                for j in range(len(self.buckets[i])):
-                    values_list.append(self.buckets[i][j][1])
-        return values_list
+        res = []
+        #Check every bucket in the hash table
+        for bucket_list in self.table:
+            #Adds all the values to the results.
+            for key, value in bucket_list:
+                res.append(value)
+        #Return all the values as a list.
+        return res
