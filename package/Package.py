@@ -39,7 +39,6 @@ class Package:
     Setter function for the co_package attribute. The if statement checks if a package has to be delivered with another one and
     then performs a for loop to remove all the extra characters in the string and only return a list of which packages need to be delivered with it.
     """
-
     def set_co_package(self, s: str):
         #Extract the package id's from the string
         if s and type(s) != float:

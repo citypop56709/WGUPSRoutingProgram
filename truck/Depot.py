@@ -37,8 +37,8 @@ class Depot:
         #change the class to deliver the delayed packages
 
     def load_trucks(self):
-        truck1_list = []
-        truck2_list = []
+        truck1_set = set()
+        truck2_set = set()
         #Sort packages by closest to the hub to the farthest
         self.deliverable_packages.sort(key=lambda x: x.address.distances[0])
         for package in self.deliverable_packages:
@@ -46,22 +46,25 @@ class Depot:
             package.status = "In Route"
             if package.co_package:
                 #Add itself into truck2's list as a co_package
-                if package not in truck2_list:
-                    truck2_list.append(package)
+                if package not in truck2_set:
+                    truck2_set.add(package)
                     #Add all potential co_packages to truck2's list.
-                    for co_package_id in package.co_package:
-                        package_in_co_package_list = self.package_table.get(co_package_id)
-                        if package_in_co_package_list and package_in_co_package_list not in truck2_list:
-                            truck2_list.append(package_in_co_package_list)
-                            package_in_co_package_list.status = "In Route"
+                    for co_package in package.co_package:
+                        if co_package not in truck2_set:
+                            truck2_set.add(co_package)
+                            co_package.status = "In Route"
+            #We are going to split the deadline packages so that the packages that have a deadline but are not a co-package are loaded into trucks other than truck 2
+            #This is to reduce excessive load on truck 2.
+            if package.deadline and package not in truck2_set:
+                truck1_set.add(package)
             elif package.truck2:
-                truck2_list.append(package)
-            elif len(truck1_list) < 16:
-                truck1_list.append(package)
-            elif len(truck2_list) < 16:
-                truck2_list.append(package)
-        self.trucks.append(Truck(1, truck1_list, self.address_list, self.package_table, self.work_start_time))
-        self.trucks.append(Truck(2, truck2_list, self.address_list, self.package_table, self.work_start_time))
+                truck2_set.add(package)
+            elif len(truck1_set) < 16:
+                truck1_set.add(package)
+            elif len(truck2_set) < 16:
+                truck2_set.add(package)
+        self.trucks.append(Truck(1, list(truck1_set), self.address_list, self.package_table, self.work_start_time))
+        self.trucks.append(Truck(2, list(truck2_set), self.address_list, self.package_table, self.work_start_time))
 
     def get_work_start_time(self):
         current_date = datetime.datetime.today()
