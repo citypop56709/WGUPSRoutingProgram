@@ -14,13 +14,15 @@ class Package:
         self.zip = zip
         self.deadline = deadline
         self.mass = mass
+        self.pickup_time = None
+        self.delivery_time = None
         self.note = note
         self.status = 'At hub'
         self.truck2 = self.set_truck2(note)
         self.arrival = self.set_arrival(note)
         self.co_package = self.set_co_package(note)
-        self.delivery_info = (f'Package ID: {id}, Address: {address.street_address}',
-                                f'At Hub')
+        self.delivery_info = (f'Package ID: {id}, Address: {address.street_address}'
+                                f': At Hub')
 
     def set_truck2(self, s: str):
         if s and type(s) != float:
@@ -58,6 +60,12 @@ class Package:
         else:
             return None
 
+    #A function that retrieves the arrival data from a package's notes.
+    #It works by creating a new string that strips any spaces or symbols from the note
+    #Then it parses the string for the time data
+    #It then creates a datetime based on that data, by replacing the hours and minutes of today's time
+    #With the time from the package note.
+    #Time Complexity: O(n) because the function only uses one for loop to parse the string.
     def get_arrival_from_string(self, s: str):
         arrival_time = ""
         new_string = "".join([i for i in s.lower() if i.isalnum()])
@@ -75,8 +83,11 @@ class Package:
             else:
                 pass
         try:
-            return time.strptime(arrival_time, "%I%M%p") if arrival_time else None
+            arrival_hours_minutes =  datetime.datetime.strptime(arrival_time, "%I%M%p") if arrival_time else None
+            return datetime.datetime.now().replace(hour=arrival_hours_minutes.hour, minute=arrival_hours_minutes.minute)
         except ValueError:
+            return None
+        except AttributeError:
             return None
 
 
