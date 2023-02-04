@@ -14,12 +14,12 @@ class Package:
         self.zip = zip
         self.deadline = deadline
         self.mass = mass
-        self.pickup_time = None
-        self.delivery_time = None
         self.note = note
-        self.status = 'At hub'
         self.truck2 = self.set_truck2(note)
         self.arrival = self.set_arrival(note)
+        self.pickup_time = None
+        self.en_route_time = None
+        self.delivery_time = None
         self.co_package = self.set_co_package(note)
         self.delivery_info = (f'Package ID: {id}, Address: {address.street_address}'
                                 f': At Hub')

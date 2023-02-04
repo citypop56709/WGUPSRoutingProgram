@@ -1,5 +1,4 @@
 import datetime
-
 from depot import Depot
 from utils import Distances, PackageTable, config
 
@@ -13,10 +12,10 @@ def main():
     packages.get_packages(package_file_path, address_table)
     depot = Depot(address_list, packages)
     depot.load_trucks()
-    config.current_time = datetime.datetime.today().replace(hour=13, minute=30, second=0)
+    config.current_time = datetime.datetime.today()
     depot.trucks[0].deliver_packages()
-    #hub_depot = Depot(address_list, packages)
-
+    depot.trucks[1].deliver_packages()
+    print(config.total_mileage)
     #User Interface
     def display_menu_options():
         print("1. Print All Package Status and Total Mileage")
