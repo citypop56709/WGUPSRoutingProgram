@@ -1,12 +1,12 @@
 import datetime
 from typing import Optional
 from hash_table import HashTable
-from package import Package
 import csv
 
 class PackageTable(HashTable):
 
     def get_packages(self, file_path: str, address_table: HashTable) -> None:
+        from package import Package
         file = open(file_path)
         package_data = csv.reader(file)
         for i, row in enumerate(package_data):
@@ -35,7 +35,8 @@ class PackageTable(HashTable):
     #A function to change the list of co-package ID's for a package, into a list of actual package objects.
     #This makes it much easier to determine which packages should be delivered together.
     #Big O: O(n) - Only one loop that continues for each n in the co-package list.
-    def get_co_packages(self, package : Package) -> None:
+    def get_co_packages(self, package) -> None:
+        from package import Package
         co_packages = []
         co_packages.append(package)
         for co_package_id in package.co_package:

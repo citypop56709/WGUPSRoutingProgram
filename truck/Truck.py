@@ -142,6 +142,7 @@ class Truck:
             else:
                 while Depot.available_deadline_packages and len(self.current_packages) < 16:
                     new_deadline_package = Depot.available_deadline_packages.popleft()
+                    new_deadline_package.truck = self.truck_id
                     new_deadline_package.pickup_time = arrival_time_to_hub
                     picked_up_packages.append(new_deadline_package)
                     self.current_packages.append(new_deadline_package)
@@ -154,6 +155,7 @@ class Truck:
                     pass
                 else:
                     package.pickup_time = arrival_time_to_hub
+                    package.truck = self.truck_id
                     picked_up_packages.append(package)
                     self.current_packages.append(package)
                     #You have to remove it here because it's not getting popped.

@@ -18,6 +18,8 @@ def main():
     print(config.total_mileage)
     #User Interface
     def display_menu_options():
+
+
         print("1. Print All Package Status and Total Mileage")
         print("2. Get a Single Package Status with a Time")
         print("3. Get All Package Status with a Time")
@@ -34,9 +36,26 @@ def main():
             except ValueError:
                 print("Invalid input.")
             print()
+        if option == "3":
+            while True:
+                try:
+                    user_time_string = input("Set the current time using the format HH:MM am/pm: ")
+                    user_time = datetime.datetime.strptime(user_time_string, "%H:%M %p")
+                    config.current_time = config.current_time.replace(hour=user_time.hour, minute=user_time.minute,
+                                                                      second=0)
+                    break
+                except ValueError:
+                    print("Invalid input. Please input time using the correct format.")
+            package_list = packages.values()
+            for package in package_list:
+                package.get_status(config.current_time)
+            package_list.sort(key=lambda x:x.status[0])
+            for package in package_list:
+                print(package.status_info)
         if option == "4":
             quit()
-    #display_menu_options()
+
+    display_menu_options()
 
 
 

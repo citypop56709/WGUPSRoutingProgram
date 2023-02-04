@@ -70,28 +70,34 @@ class Depot:
             if package in co_package_list:
                 truck2_list.append(package)
                 package.pickup_time = config.start_time
+                package.truck = 2
                 #We change the co-package attribute from a list to a boolean. Since they will all get delivered together.
                 package.co_package = True
-                co_package_list.remove(package)
             elif package.deadline and package not in truck2_list and len(truck1_list) < 16:
                 truck1_list.append(package)
                 package.pickup_time = config.start_time
+                package.truck = 1
             elif package.truck2 and len(truck2_list) < 16:
                 truck2_list.append(package)
                 package.pickup_time = config.start_time
+                package.truck = 2
             elif len(truck1_list) < 16:
                 if package not in truck2_list:
                     truck1_list.append(package)
                     package.pickup_time = config.start_time
+                    package.truck = 1
             elif len(truck2_list) < 16:
                 if package not in truck1_list:
                     truck2_list.append(package)
                     package.pickup_time = config.start_time
+                    package.truck = 2
             else:
                 if package.deadline:
                     Depot.available_deadline_packages.append(package)
+                    print(f"The package {package.id} is a deadline package leftover")
                 else:
                     Depot.available_for_pickup.append(package)
+                    print(f"The package {package.id} is a leftover package")
         self.trucks.append(Truck(1, truck1_list, self.address_list, self.package_table))
         self.trucks.append(Truck(2, truck2_list, self.address_list, self.package_table))
 
