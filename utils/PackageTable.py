@@ -45,4 +45,23 @@ class PackageTable(HashTable):
                 co_packages.append(co_package)
         package.co_package = co_packages
 
+    def get_package_statuses_over_time (self, start_time: datetime, end_time: datetime):
+        packages = self.values()
+        packages.sort(key=lambda x:x[0])
+        #First we need to remove all the status info that was there previously
+        for package in packages:
+            package.status_info = None
+        #Adjust the status by time.
+        while start_time <= end_time:
+            for package in packages:
+                package.get_status(start_time)
+            #We increase the time by one minute each time
+            start_time += datetime.timedelta(minutes=1)
+
+    def get_package_statuses(self, time: datetime):
+        packages = self.values()
+        for package in packages:
+            package.get_status(time)
+        packages.sort(key=lambda x: x.status[0])
+
 

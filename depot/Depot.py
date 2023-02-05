@@ -9,7 +9,7 @@ from utils import config
 
 
 class Depot:
-    # This is global variable so that way it's easier for the Truck class to access this list.
+    # This is static variable so that way it's easier for the Truck class to access.
     # The reason why it uses a deque is to make removing and appending the first item in a list much faster.
     delayed_packages = deque()
     available_deadline_packages = deque()
@@ -19,6 +19,8 @@ class Depot:
         self.package_table = package_table
         self.address_list = address_list
         self.deliverable_packages = self.process_packages()
+        self.total_mileage = None
+
     def process_packages(self) -> list[Package]:
         deliverable_packages = []
         for package in self.package_table.values():
@@ -69,27 +71,27 @@ class Depot:
             #Adds all the co-packages. It has to remove it from the list or else it would keep adding forever.
             if package in co_package_list:
                 truck2_list.append(package)
-                package.pickup_time = config.start_time
+                package.pickup_time = config.work_start_time
                 package.truck = 2
                 #We change the co-package attribute from a list to a boolean. Since they will all get delivered together.
                 package.co_package = True
             elif package.deadline and package not in truck2_list and len(truck1_list) < 16:
                 truck1_list.append(package)
-                package.pickup_time = config.start_time
+                package.pickup_time = config.work_start_time
                 package.truck = 1
             elif package.truck2 and len(truck2_list) < 16:
                 truck2_list.append(package)
-                package.pickup_time = config.start_time
+                package.pickup_time = config.work_start_time
                 package.truck = 2
             elif len(truck1_list) < 16:
                 if package not in truck2_list:
                     truck1_list.append(package)
-                    package.pickup_time = config.start_time
+                    package.pickup_time = config.work_start_time
                     package.truck = 1
             elif len(truck2_list) < 16:
                 if package not in truck1_list:
                     truck2_list.append(package)
-                    package.pickup_time = config.start_time
+                    package.pickup_time = config.work_start_time
                     package.truck = 2
             else:
                 if package.deadline:
@@ -97,10 +99,13 @@ class Depot:
                     print(f"The package {package.id} is a deadline package leftover")
                 else:
                     Depot.available_for_pickup.append(package)
-                    print(f"The package {package.id} is a leftover package")
         self.trucks.append(Truck(1, truck1_list, self.address_list, self.package_table))
         self.trucks.append(Truck(2, truck2_list, self.address_list, self.package_table))
 
-    def get_work_start_time(self):
-        current_date = datetime.datetime.today()
-        return datetime.datetime.today().replace(hour=8, minute=0, second=0)
+    #A function get the total miles for each truck.
+    #
+    def get_total_mileage(self) -> float:
+        total_miles = 0.0
+        for truck in self.trucks:
+            total_miles += truck.get_total_miles()
+        return total_miles

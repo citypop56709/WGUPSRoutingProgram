@@ -19,15 +19,15 @@ class Truck:
         self.co_package_list = self.process_co_packages()
         self.deadline_package_list = self.process_deadline_packages()
         self.options = self.process_packages()
-        self.total_miles = 0.0
-        self.truck_current_time = config.start_time
+        self.truck_current_time = config.work_start_time
+        self.total_miles = [(0.0, self.truck_current_time)]
 
     #A function to go through all the current packages and make deliveries.
     def deliver_packages(self):
         while self.current_packages:
             distance = self.get_next_package_distance()
-            self.total_miles += distance
             self.truck_current_time = self.current_package.delivery_time
+            self.total_miles.append((distance+self.total_miles[-1][0], self.truck_current_time))
             if self.current_package in self.options:
                 self.options.remove(self.current_package)
             if self.current_package in self.deadline_package_list:
@@ -41,7 +41,6 @@ class Truck:
                 self.deadline_package_list = self.process_deadline_packages()
         else:
             self.return_to_hub()
-            config.total_mileage += self.total_miles
         return
 
 
@@ -111,9 +110,9 @@ class Truck:
             return
         #We calculate the distance back to make sure to account for the time it takes to get back to the hub.
         distance_to_hub = self.current_package.address.distances[0]
-        self.total_miles += distance_to_hub
-        self.current_package = None
         self.truck_current_time = self.get_time(self.truck_current_time, distance_to_hub)
+        self.total_miles.append((distance_to_hub+self.total_miles[-1][0], self.truck_current_time))
+        self.current_package = None
 
     def process_leftover_packages(self, start_time, distance) -> bool:
         picked_up = False
@@ -186,5 +185,22 @@ class Truck:
                 options.append(package)
         return options
 
+    #A function to get the current miles at a given time.
+    #This works by looping through the tuples in the total miles list.
+    #If the last time is greater than the current time then the previous index's mileage is the new total.
+    #Time Complexity: O(n) worst case if it has to loop through each value.
+    def get_total_miles(self) -> float:
+        total = 0.0
+        for i in range(len(self.total_miles)):
+            if self.total_miles[i][1] > config.current_time:
+                if i-1 >= 0:
+                    total = self.total_miles[i-1][0]
+                    return total
+                else:
+                    total = self.total_miles[0][0]
+                    return total
+            else:
+                total = self.total_miles[i][0]
+        return total
 
 

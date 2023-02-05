@@ -23,39 +23,54 @@ class Package:
         self.delivery_time = None
         self.co_package = self.set_co_package(note)
         self.status = None
-        self.status_info = None
+        self.status_change = False
+        self._status_info = None
+    @property
+    def status_info(self):
+        #Retrieve the status info value. The property decorator is used to simplify monitoring changes.
+        return self._status_info
+    @status_info.setter
+    def status_info(self, value):
+        self._status_info = value
+        if self.status_change:
+            print(self.status_info)
 
     #A function to get the current status of a package given a specific time.
     #This tells you where that package was.
     #It works by checking the time compared to each stage of the package and then sets the status to a string.
     #The program uses tuples to make sorting by package status simple.
     def get_status(self, time:datetime):
-        if self.pickup_time > config.current_time and self.arrival:
+        status_info = None
+        if self.pickup_time > time and self.arrival:
             self.status = (0, "Delayed")
             time_string = datetime.datetime.strftime(self.arrival, "%H:%M %p")
-            self.status_info = f"Package {self.id}, Status: {self.status[1]} arriving at {time_string}"
+            status_info = f"Package {self.id}, Status: {self.status[1]} arriving at {time_string}"
+            self.status_change = True if status_info != self.status_info else False
+            self.status_info = status_info
             return
-        if self.pickup_time > config.current_time and not self.arrival:
+        if self.pickup_time > time and not self.arrival:
             self.status = (1, "At Hub")
-            time_string = datetime.datetime.strftime(config.current_time, "%H:%M %p")
-            self.status_info = (f"Package {self.id}, Status: {self.status[1]} at {time_string}")
+            status_info = (f"Package {self.id}, Status: {self.status[1]}")
+            self.status_change = True if status_info != self.status_info else False
+            self.status_info = status_info
             return
-        if self.en_route_time > config.current_time:
+        elif self.en_route_time > time:
             self.status = (2, "Picked Up")
             time_string = datetime.datetime.strftime(self.pickup_time, "%H:%M %p")
-            self.status_info = (
+            status_info = (
                 f"Package {self.id}, Status: {self.status[1]} at {time_string}, Truck: {self.truck}")
-        elif self.delivery_time > config.current_time:
+        elif self.delivery_time > time:
             self.status = (3, "En Route")
             time_string = datetime.datetime.strftime(self.en_route_time, "%H:%M %p")
-            self.status_info = (
+            status_info = (
                 f"Package {self.id}, Status: {self.status[1]} at {time_string}, Truck: {self.truck}")
         else:
             self.status = (4, "Delivered")
             time_string = datetime.datetime.strftime(self.delivery_time, "%H:%M %p")
-            self.status_info = (
+            status_info = (
                 f"Package {self.id}, Status: {self.status[1]} at {time_string}, Truck: {self.truck}")
-
+        self.status_change = True if status_info != self.status_info else False
+        self.status_info = status_info
 
     def set_truck2(self, s: str):
         if s and type(s) != float:
