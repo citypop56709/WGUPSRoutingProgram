@@ -24,16 +24,7 @@ class Package:
         self.co_package = self.set_co_package(note)
         self.status = None
         self.status_change = False
-        self._status_info = None
-    @property
-    def status_info(self):
-        #Retrieve the status info value. The property decorator is used to simplify monitoring changes.
-        return self._status_info
-    @status_info.setter
-    def status_info(self, value):
-        self._status_info = value
-        if self.status_change:
-            print(self.status_info)
+        self.status_info = None
 
     #A function to get the current status of a package given a specific time.
     #This tells you where that package was.

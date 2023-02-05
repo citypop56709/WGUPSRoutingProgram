@@ -189,10 +189,10 @@ class Truck:
     #This works by looping through the tuples in the total miles list.
     #If the last time is greater than the current time then the previous index's mileage is the new total.
     #Time Complexity: O(n) worst case if it has to loop through each value.
-    def get_total_miles(self) -> float:
+    def get_total_miles(self, time: datetime) -> float:
         total = 0.0
         for i in range(len(self.total_miles)):
-            if self.total_miles[i][1] > config.current_time:
+            if self.total_miles[i][1] > time:
                 if i-1 >= 0:
                     total = self.total_miles[i-1][0]
                     return total

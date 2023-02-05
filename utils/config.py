@@ -15,6 +15,6 @@ def set_time(time:datetime, time_type="current") -> datetime:
             user_time_string = input(f"Set the {time_type} time using the format HH:MM am/pm: ")
             user_time = datetime.datetime.strptime(user_time_string, "%H:%M %p")
             return time.replace(hour=user_time.hour, minute=user_time.minute,
-                                               second=0)
+                                               second=0, microsecond= 0)
         except ValueError:
             print("Invalid input. Please input time using the correct format.")

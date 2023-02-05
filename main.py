@@ -14,7 +14,7 @@ def main():
     depot.load_trucks()
     depot.trucks[0].deliver_packages()
     depot.trucks[1].deliver_packages()
-    print(depot.get_total_mileage())
+    print(depot.get_total_mileage(config.start_time))
     #User Interface
     def display_menu_options():
 
@@ -26,8 +26,8 @@ def main():
         option = input("Select an option: ")
         if option == "1":
             config.start_time = config.set_time(config.start_time, "start")
-            config.end_time = config
-            packages.get_package_statuses_over_time(config.start_time, config.end_time)
+            config.end_time = config.set_time(config.end_time, "end")
+            packages.get_package_statuses_over_time(config.start_time, config.end_time, depot)
         if option == "2":
             config.set_time()
             print("Enter in a valid package ID: ")
@@ -42,7 +42,7 @@ def main():
                 print("Invalid input.")
             print()
         if option == "3":
-            config.set_time(config.current_time)
+            config.current_time = config.set_time(config.current_time)
             packages.get_package_statuses(config.current_time)
         if option == "4":
             quit()

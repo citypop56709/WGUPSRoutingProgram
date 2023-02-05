@@ -103,9 +103,8 @@ class Depot:
         self.trucks.append(Truck(2, truck2_list, self.address_list, self.package_table))
 
     #A function get the total miles for each truck.
-    #
-    def get_total_mileage(self) -> float:
+    def get_total_mileage(self, time:datetime) -> float:
         total_miles = 0.0
         for truck in self.trucks:
-            total_miles += truck.get_total_miles()
+            total_miles += truck.get_total_miles(time)
         return total_miles
