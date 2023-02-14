@@ -99,8 +99,8 @@ class Depot:
                     print(f"The package {package.id} is a deadline package leftover")
                 else:
                     Depot.available_for_pickup.append(package)
-        self.trucks.append(Truck(1, truck1_list, self.address_list, self.package_table))
-        self.trucks.append(Truck(2, truck2_list, self.address_list, self.package_table))
+        self.trucks.append(Truck(1, truck1_list, self.address_list))
+        self.trucks.append(Truck(2, truck2_list, self.address_list))
 
     #A function get the total miles for each truck.
     def get_total_mileage(self, time:datetime) -> float:

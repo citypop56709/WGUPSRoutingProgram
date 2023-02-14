@@ -1,19 +1,17 @@
 import datetime
 
 from depot import Depot
-from hash_table import HashTable
 from package import Package
 from utils import config
 
 class Truck:
     def __init__(self, truck_id, current_packages: list[Package],
-                 address_list: list[list[int]], package_table: HashTable):
+                 address_list: list[list[int]]):
         self.truck_id = truck_id
         self.current_package = None  # Current address
         self.speed = float(18)
         self.current_packages = current_packages
         self.address_list = address_list
-        self.package_table = package_table
         self.must_deliver_packages = []
         self.delayed_packages = []
         self.co_package_list = self.process_co_packages()
@@ -25,7 +23,7 @@ class Truck:
     #A function to go through all the current packages and make deliveries.
     def deliver_packages(self):
         while self.current_packages:
-            distance = self.get_next_package_distance()
+            distance = self.get_next_package()
             self.truck_current_time = self.current_package.delivery_time
             self.total_miles.append((distance+self.total_miles[-1][0], self.truck_current_time))
             if self.current_package in self.options:
@@ -47,7 +45,15 @@ class Truck:
     #A function that determines what the next package to be delivered should be.
     #Returns the distance of that package from the starting location.
     #Developer's Note: This function and the deliver_packages function used to be one thing.
-    def get_next_package_distance(self) -> float:
+    """
+    1. The driver has a starting position, if the driver is starting it will be the hub, if not it will be the ID of the address of the last package delviered.
+    (Logically this makes sense, our driver has just made a delivery and is still there)
+    2. The driver checks each package that is on the truck.
+    3. Packages are sorted by distance.
+    4. The closest package is delivered and is therefore removed from the packages that are on the truck.
+    5. That package's adresses becomes the new starting location.
+    """
+    def get_next_package(self) -> float:
         start = 0 if not self.current_package else self.current_package.address.id
         #Deadline packages are sorted by deadline.
         if self.deadline_package_list:

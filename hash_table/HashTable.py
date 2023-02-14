@@ -46,8 +46,7 @@ class HashTable:
         # get the bucket list where this key, value pair will be removed from.
         bucket = hash(key) % len(self.table)
         bucket_list = self.table[bucket]
-
-        # remove the the key, value pair from the bucket if it's present in that bucket
+        # remove the key, value pair from the bucket if it's present in that bucket
         for (_key, value) in bucket_list:
             if key == _key:
                 bucket_list.remove((key, value))

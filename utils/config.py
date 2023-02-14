@@ -5,7 +5,7 @@ current_time = datetime.datetime.today().replace(hour=8, minute=0, second=0)
 work_start_time = datetime.datetime.today().replace(hour=8, minute=0, second=0)
 start_time = datetime.datetime.today().replace(hour=8, minute=0, second=0)
 end_time = datetime.datetime.today().replace(hour=8, minute=0, second=0)
-
+total_miles = 0.0
 
 #A function to update the current time with the time that a user inputs.
 #It uses exception handling to make validating the user's input easier.
