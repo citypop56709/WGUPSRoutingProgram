@@ -1,13 +1,13 @@
+from hash_table import HashTable
 from utils import config
 from depot import Depot
-from utils import PackageTable
 
 #A function to generate the user interface.
 #Parameters:
 # packages -> Takes in a PackageTable that is a specialized HashTable specifically for packages.
 # depot -> Takes in a
 
-def display_menu_options(packages: PackageTable, depot: Depot):
+def display_menu_options(packages: HashTable, depot: Depot):
     print("1. Print All Package Status and Total Mileage")
     print("2. Get a Single Package Status with a Time")
     print("3. Get All Package Status with a Time")
@@ -25,8 +25,8 @@ def display_menu_options(packages: PackageTable, depot: Depot):
     if option == "2":
         try:
             config.current_time = config.set_time(config.current_time, "current")
-            package_id = input("Enter in a valid package ID: ")
-            status_info = packages.package_lookup(package_id)
+            package_id = int(input("Enter in a valid package ID: "))
+            status_info = packages.status_lookup(package_id)
             print(status_info)
             input()
         except ValueError:

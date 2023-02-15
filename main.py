@@ -1,5 +1,6 @@
 from depot import Depot
-from utils import Distances, PackageTable, config
+from hash_table import HashTable
+from utils import PackageTools
 from utils import Interface
 
 
@@ -18,10 +19,11 @@ from utils import Interface
 def main():
     distance_file_path = r"Documentation/WGUPS Distance Table.csv"
     package_file_path = r"Documentation/WGUPS Package File.csv"
-    address_list = Distances.get_addresses_from_file(distance_file_path)
-    address_table = Distances.get_address_table(address_list)
-    packages = PackageTable()
-    packages.get_packages(package_file_path, address_table)
+    address_list = PackageTools.get_addresses_from_file(distance_file_path)
+    address_table = HashTable()
+    PackageTools.update_address_table(address_table, address_list)
+    packages = HashTable()
+    PackageTools.update_packages_from_csv(packages, package_file_path, address_table)
     depot = Depot(address_list, packages)
     depot.load_trucks()
     #The program delivers all the packages first, and then tracks where each package is in the delivery process,
