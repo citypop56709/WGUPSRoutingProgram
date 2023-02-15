@@ -78,7 +78,7 @@ class PackageTools:
             raise ValueError("The distances are not in a valid format.") from None
 
     @classmethod
-    def update_address_table(cls, address_table, address_list: list[Address]) -> HashTable:
+    def update_address_table(cls, address_table, address_list: list[Address]) -> None:
         for address in address_list:
             address_table.put(address.street_address, address)
 
