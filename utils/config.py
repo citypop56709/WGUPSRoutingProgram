@@ -11,6 +11,6 @@ total_miles = 0.0
 #It uses exception handling to make validating the user's input easier.
 def set_time(time:datetime, time_type: str) -> datetime:
     user_time_string = input(f"Set the {time_type} time using the format HH:MM am/pm: ")
-    user_time = datetime.datetime.strptime(user_time_string, "%H:%M %p")
+    user_time = datetime.datetime.strptime(user_time_string, "%I:%M %p")
     return time.replace(hour=user_time.hour, minute=user_time.minute,
                                        second=0, microsecond= 0)

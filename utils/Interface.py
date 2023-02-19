@@ -1,6 +1,9 @@
+from datetime import time
+import time
 from hash_table import HashTable
 from utils import config
 from depot import Depot
+
 
 #A function to generate the user interface.
 #Parameters:
@@ -37,7 +40,7 @@ def display_menu_options(packages: HashTable, depot: Depot):
     if option == "3":
         try:
             config.current_time = config.set_time(config.current_time, "current")
-            packages.lookup_all()
+            packages.lookup_all(depot)
             input()
         except ValueError:
             print("Invalid input.")

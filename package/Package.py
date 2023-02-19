@@ -1,10 +1,16 @@
 import datetime
 from typing import Optional
-from utils import config
 from address import Address
 
-
+# A class that creates a package object.
+# The package object stores all the information for each package in a single object.
+# This makes it simple to get the correct package information.
 class Package:
+    # A constructor for the package class.
+    # Each parameter is based on columns in the packages CSV file.
+    # The package also contains attributes that track the time the package is picked up from the depot,
+    # the time that it begins its delivery, and the time it actually gets delivered.
+    # The status_change and last_status attributes are for tracking the package's status over time.
     def __init__(self, id: int, address: Address, city: str, state: str, zip: str, deadline: object, mass: int,
                  note: Optional[str]):
         self.id = id
@@ -24,9 +30,10 @@ class Package:
         self.co_package = self.set_co_package(note)
         self.status = None
         self.status_change = False
-        #This is necessary or else there is no way to check if a package was changed or not.
+        #This is necessary. Otherwise, there is no way to check if the package's status changed previously.self.last_status = None
         self.last_status = None
 
+    # A function that checks the notes string to see if the package can only be on truck #2.
     def set_truck2(self, s: str):
         if s and type(s) != float:
             if "can only be on truck 2" in s.lower():
@@ -34,27 +41,29 @@ class Package:
         else:
             return False
 
+    # A function that checks the notes string to see if the package has a delay with a later arrival date.
+    # It calls the function get_arrival to retrieve the information from the notes string.
     def set_arrival(self, s: str):
         if s and type(s) != float:
-            return self.get_arrival_from_string(s)
+            return self.get_arrival(s)
         else:
             return None
 
-    """
-    Setter function for the co_package attribute. The if statement checks if a package has to be delivered with another one and
-    then performs a for loop to remove all the extra characters in the string and only return a list of which packages need to be delivered with it.
-    """
+    # A setter function for the co_package attribute.
+    # The if statement checks if a package has to be delivered with another one and,
+    # then performs a for loop to remove all the extra characters in the string.
+    # It then returns an integer list of which package IDs are co-packages.
+    # Big O: O(n) - There are multiple for loops that parses through each character in the string, but only one loop is running at a time.
     def set_co_package(self, s: str):
-        #Extract the package id's from the string
         if s and type(s) != float:
             if "must be delivered with" in s.lower():
                 res = ''
                 for i in range(len(s)):
                     if not s[i].isalpha():
                         res += s[i]
-                #Split the string making the string into a list of all the values.
+                #Split the string, converting the string into a list of characters.
                 split_list = res.split(',')
-                #Turn all these strings into integers
+                #Converts the strings into integers
                 for i in range(len(split_list)):
                     split_list[i] = int(split_list[i])
                 return split_list
@@ -63,13 +72,12 @@ class Package:
         else:
             return None
 
-    #A function that retrieves the arrival data from a package's notes.
-    #It works by creating a new string that strips any spaces or symbols from the note
-    #Then it parses the string for the time data
-    #It then creates a datetime based on that data, by replacing the hours and minutes of today's time
-    #With the time from the package note.
-    #Time Complexity: O(n) because the function only uses one for loop to parse the string.
-    def get_arrival_from_string(self, s: str):
+        # A function that retrieves the arrival data from a package's notes.
+        # It creates a new string that strips any spaces or non-alphanumeric characters from the note string.
+        # Then, it parses the string for the time data using if statements.
+        # It then creates a datetime object based on that data,
+        # by replacing the hours and minutes of the current time with the one from the notes.
+        # Big O: O(n) because the function only uses one for loop to parse each character in the string.    def get_arrival(self, s: str):
         arrival_time = ""
         new_string = "".join([i for i in s.lower() if i.isalnum()])
         for i in range(len(new_string)):

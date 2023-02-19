@@ -1,19 +1,19 @@
-"""
-Class to help manage multiple trucks. This class has methods and attributes specifically for seeing where all the packages are.
-"""
 import datetime
 from collections import deque
 from hash_table import HashTable
 from package import Package
 from utils import config
 
-
+# A Class to help manage multiple trucks.
 class Depot:
-    # This is static variable so that way it's easier for the Truck class to access.
-    # The reason why it uses a deque is to make removing and appending the first item in a list much faster.
+    # delayed_packages, available_deadline_packages, and available_for_pickup are static variables because it makes it easier for the trucks to access them.
+    # A deque is used with delayed_packages, and available_deadline_packages to make removing and appending values to the front of the list much faster.
     delayed_packages = deque()
     available_deadline_packages = deque()
     available_for_pickup = []
+
+    # A constructor for the Depot class.
+    # The constructor takes in an address list, a list of all possible and a package table, which is a hash table of all deliverable packages.
     def __init__(self, address_list: list[list[int]], package_table: HashTable):
         self.trucks = []
         self.package_table = package_table
