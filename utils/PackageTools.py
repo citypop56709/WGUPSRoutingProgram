@@ -12,8 +12,9 @@ class PackageTools:
     # The function takes in the file path where the CSV is located, a hash table of packages, and a hash table of addresses.
     # It creates package objects using data from the CSV file. After the package object is created it gets inserted into the hash table
     # as a value with the package ID as a key.
-    # Big O: O(n log n) - Time complexity is O(n log n) even though there are two separate for loops that have a time complexity of O(n)
-    # each, the operation that takes the most time is retrieving the values from the packages hash table using the values() function.    @classmethod
+    # Big O: O(n log n) - Time complexity is O(n log n) even though there are two separate for loops that have a time complexity of O(n) for each loop.
+    # The operation that takes the most time is retrieving the values from the packages hash table using the values() function.
+    @classmethod
     def update_packages_from_csv(cls, file_path: str, packages: HashTable, address_table: HashTable) -> None:
         file = open(file_path)
         package_data = csv.reader(file)

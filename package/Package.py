@@ -72,12 +72,13 @@ class Package:
         else:
             return None
 
-        # A function that retrieves the arrival data from a package's notes.
-        # It creates a new string that strips any spaces or non-alphanumeric characters from the note string.
-        # Then, it parses the string for the time data using if statements.
-        # It then creates a datetime object based on that data,
-        # by replacing the hours and minutes of the current time with the one from the notes.
-        # Big O: O(n) because the function only uses one for loop to parse each character in the string.    def get_arrival(self, s: str):
+    # A function that retrieves the arrival data from a package's notes.
+    # It creates a new string that strips any spaces or non-alphanumeric characters from the note string.
+    # Then, it parses the string for the time data using if statements.
+    # It then creates a datetime object based on that data,
+    # by replacing the hours and minutes of the current time with the one from the notes.
+    # Big O: O(n) because the function only uses one for loop to parse each character in the string.
+    def get_arrival(self, s: str):
         arrival_time = ""
         new_string = "".join([i for i in s.lower() if i.isalnum()])
         for i in range(len(new_string)):

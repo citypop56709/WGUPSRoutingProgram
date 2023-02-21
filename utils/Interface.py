@@ -1,15 +1,11 @@
-from datetime import time
-import time
 from hash_table import HashTable
 from utils import config
 from depot import Depot
 
 
-#A function to generate the user interface.
-#Parameters:
-# packages -> Takes in a PackageTable that is a specialized HashTable specifically for packages.
-# depot -> Takes in a
-
+# A function to generate the user interface.
+# The interface uses the console to output options so the user can make selections.
+# It uses exception handling to ensure valid inputs.
 def display_menu_options(packages: HashTable, depot: Depot):
     print("1. Print All Package Status and Total Mileage")
     print("2. Get a Single Package Status with a Time")

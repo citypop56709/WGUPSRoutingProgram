@@ -6,7 +6,7 @@ from utils import Interface
 
 # Ayun Daywhea
 # adaywhe@wgu.edu
-# 17 Feb 2023
+# 21 Feb 2023
 # ID: 001177960
 # Main function for the WGUPSRouting Program
 # This function does four things:
@@ -24,7 +24,7 @@ def main():
     address_table = HashTable()
     PackageTools.set_address_table(address_table, address_list)
     packages = HashTable()
-    PackageTools.update_packages_from_csv(packages, package_file_path, address_table)
+    PackageTools.update_packages_from_csv(package_file_path, packages, address_table)
     depot = Depot(address_list, packages)
     depot.load_trucks()
     # The program delivers all the packages first and then tracks where each package is in the delivery process,
